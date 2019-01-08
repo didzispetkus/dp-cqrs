@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DP.CQRS.Command
+namespace DP.CQRS
 {
     /// <inheritdoc/>
     public class CommandDispatcher : ICommandDispatcher
