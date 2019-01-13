@@ -3,6 +3,5 @@
     public partial class CommandDispatcherTests
     {
         public class TestCommand : ICommand { }
-
     }
 }

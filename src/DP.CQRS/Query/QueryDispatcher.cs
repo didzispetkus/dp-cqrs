@@ -20,17 +20,18 @@ namespace DP.CQRS
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Dispatches and returns result specified by the given query.
         /// </summary>
         /// <typeparam name="TResult">The type of result returned by query.</typeparam>
         /// <param name="query">Query to handle.</param>
         /// <returns>The result specified by query.</returns>
-        /// <exception cref="ArgumentNullException">
-        /// Thrown when <paramref name="query"/> is <see langword="null"/>.
+        /// <exception cref="T:System.ArgumentNullException">
+        /// Thrown when <paramref name="query" /> is <see langword="null" />.
         /// </exception>
-        /// <exception cref="QueryHandlerNotFoundException">
-        /// Thrown when handler can not be resolved using <see cref="IServiceProvider"/>.
+        /// <exception cref="T:DP.CQRS.QueryHandlerNotFoundException">
+        /// Thrown when handler can not be resolved using <see cref="T:System.IServiceProvider" />.
         /// </exception>
         TResult IQueryDispatcher.Dispatch<TResult>(IQuery<TResult> query)
         {

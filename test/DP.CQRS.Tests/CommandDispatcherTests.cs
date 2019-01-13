@@ -7,21 +7,20 @@ namespace DP.CQRS.Tests
     [TestClass]
     public partial class CommandDispatcherTests
     {
-        private ICommandDispatcher CreateCommandDispatcher(IServiceProvider serviceProvider) => new CommandDispatcher(serviceProvider);
+        private static ICommandDispatcher CreateCommandDispatcher(IServiceProvider serviceProvider) => new CommandDispatcher(serviceProvider);
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_NullServiceProvider_ThrowsArgumentNullException()
         {
-            IServiceProvider serviceProvider = null;
-            var dispatcher = CreateCommandDispatcher(serviceProvider);
+            CreateCommandDispatcher(null);
         }
 
         [TestMethod]
         public void Dispatch_ValidCommand_CommandHandled()
         {
             //Arrange
-            bool commandHandled = false;
+            var commandHandled = false;
 
             var commandHandlerMock = new Mock<ICommandHandler<TestCommand>>();
             commandHandlerMock.Setup(x => x.Handle(It.IsAny<TestCommand>())).Callback(() => commandHandled = true);
@@ -43,9 +42,8 @@ namespace DP.CQRS.Tests
         {
             //Arrange
             var dispatcher = CreateCommandDispatcher(new Mock<IServiceProvider>().Object);
-            TestCommand command = null;
             //Act
-            dispatcher.Dispatch(command);
+            dispatcher.Dispatch((TestCommand)null);
         }
 
         [TestMethod]

@@ -13,15 +13,14 @@ namespace DP.CQRS.Tests
         [ExpectedException(typeof(ArgumentNullException))]
         public void Constructor_NullServiceProvider_ThrowsArgumentNullException()
         {
-            IServiceProvider serviceProvider = null;
-            var dispatcher = CreateQueryDispatcher(serviceProvider);
+            CreateQueryDispatcher(null);
         }
 
         [TestMethod]
         public void Dispatch_ValidQuery_ReturnsValue()
         {
             //Arrange
-            string expectedValue = "This is a unit test";
+            var expectedValue = "This is a unit test";
 
             var handlerMock = new Mock<IQueryHandler<TestQuery, string>>();
             handlerMock
@@ -32,7 +31,7 @@ namespace DP.CQRS.Tests
             serviceMock.Setup(x => x.GetService(It.IsAny<Type>())).Returns(handlerMock.Object);
 
             var dispatcher = CreateQueryDispatcher(serviceMock.Object);
-            TestQuery query = new TestQuery();
+            var query = new TestQuery();
 
             //Act
             var actualValue = dispatcher.Dispatch(query);
@@ -47,9 +46,8 @@ namespace DP.CQRS.Tests
         {
             //Arrange
             var dispatcher = CreateQueryDispatcher(new Mock<IServiceProvider>().Object);
-            TestQuery query = null;
             //Act
-            var result = dispatcher.Dispatch(query);
+            dispatcher.Dispatch((TestQuery)null);
         }
 
         [TestMethod]
@@ -62,11 +60,11 @@ namespace DP.CQRS.Tests
 
             var dispatcher = CreateQueryDispatcher(mock.Object);
 
-            bool exceptionThrown = false;
+            var exceptionThrown = false;
             //Act
             try
             {
-                var result = dispatcher.Dispatch(new TestQuery());
+                dispatcher.Dispatch(new TestQuery());
             }
             catch (QueryHandlerNotFoundException ex)
             {
