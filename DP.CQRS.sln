@@ -9,7 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DP.CQRS", "src\DP.CQRS\DP.C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{63A5CBDA-CD56-4185-BD2E-302F82EF9A3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DP.CQRS.Tests", "test\DP.CQRS.Tests\DP.CQRS.Tests.csproj", "{0346F29D-AC96-49DC-94E0-E93479EDE3EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DP.CQRS.Tests", "test\DP.CQRS.Tests\DP.CQRS.Tests.csproj", "{0346F29D-AC96-49DC-94E0-E93479EDE3EC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BF8307C6-177D-431B-B079-7735038648D0}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		build.yaml = build.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

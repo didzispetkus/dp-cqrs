@@ -1,0 +1,59 @@
+# Build numbering format
+name: $(date:yyyyMMdd)$(rev:.r)
+
+variables:
+  buildConfiguration: 'Release'
+  buildPlatform: 'Any CPU'
+
+# Continuous integration
+trigger:
+  batch: true
+pr:
+- master
+
+pool:
+  name: Hosted VS2017
+  demands:
+  - msbuild
+  - visualstudio
+  - vstest
+
+steps:
+
+# Ensure NuGet installed
+- task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 4.3.0'
+  inputs:
+    versionSpec: 4.3.0
+
+
+ # Restore NuGet packages
+- task: NuGetCommand@2
+  displayName: 'NuGet Restore'
+  inputs:
+    command: restore
+    restoreSolution: '**\*.sln'
+
+
+# Build solution
+- task: VSBuild@1
+  displayName: 'Build Solution'
+  inputs:
+    solution: '**\*.sln'
+    vsVersion: latest
+    platform: $(buildPlatform)
+    configuration: $(buildConfiguration)
+
+
+# Run unit test
+- task: VSTest@2
+  displayName: 'Run Unit Tests'
+  inputs:
+    testAssemblyVer2: |
+     **\*.Tests.dll
+     !**\*TestAdapter.dll
+     !**\obj\**
+
+    codeCoverageEnabled: true
+    platform: $(buildPlatform)
+    configuration: $(buildConfiguration)    
