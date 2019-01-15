@@ -22,9 +22,9 @@ steps:
 
 # Ensure NuGet installed
 - task: NuGetToolInstaller@0
-  displayName: 'Use NuGet 4.3.0'
+  displayName: 'Use NuGet 4.9.2'
   inputs:
-    versionSpec: 4.3.0
+    versionSpec: 4.9.2
 
 
  # Restore NuGet packages
