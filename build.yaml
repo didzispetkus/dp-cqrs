@@ -56,4 +56,22 @@ steps:
 
     codeCoverageEnabled: true
     platform: $(buildPlatform)
-    configuration: $(buildConfiguration)    
+    configuration: $(buildConfiguration)
+
+# Build NuGet packages
+- task: NuGetCommand@2
+  displayName: 'NuGet pack'
+  inputs:
+    command: pack
+    packagesToPack: src/DP.CQRS/DP.CQRS.csproj
+    includeReferencedProjects: true
+    includeSymbols: true
+    packDestination: '$(Build.ArtifactStagingDirectory)/packages'
+
+
+# Publish Artifacts
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifacts'
+  inputs:
+    PathtoPublish: $(Build.ArtifactStagingDirectory)
+    ArtifactName: artifacts
