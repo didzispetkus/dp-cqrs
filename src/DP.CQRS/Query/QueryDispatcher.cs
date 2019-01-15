@@ -5,7 +5,6 @@ namespace DP.CQRS
     /// <inheritdoc/>
     public class QueryDispatcher : IQueryDispatcher
     {
-
         private readonly IServiceProvider _serviceProvider;
 
         /// <summary>

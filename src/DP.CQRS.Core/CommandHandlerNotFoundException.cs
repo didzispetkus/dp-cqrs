@@ -8,7 +8,6 @@ namespace DP.CQRS
     /// </summary>
     public class CommandHandlerNotFoundException : Exception
     {
-
         /// <inheritdoc />
         /// <summary>
         /// Initializes a new instance of the <see cref="T:DP.CQRS.CommandHandlerNotFoundException" /> class with a specified handler type.
