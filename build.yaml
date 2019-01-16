@@ -54,14 +54,10 @@ steps:
 
 # Build NuGet packages
 - task: NuGetCommand@2
-  displayName: 'NuGet pack'
+  displayName: 'NuGet custom pack'
   inputs:
-    command: pack
-    packagesToPack: src/DP.CQRS/DP.CQRS.csproj
-    includeReferencedProjects: true
-    includeSymbols: true
-    packDestination: '$(Build.ArtifactStagingDirectory)/packages'
-
+    command: custom
+    arguments: 'pack src/DP.CQRS/DP.CQRS.csproj -IncludeReferencedProjects -Symbols -SymbolPackageFormat snupkg -OutputDirectory $(Build.ArtifactStagingDirectory)/packages -Properties Configuration=$(buildConfiguration)'
 
 # Publish Artifacts
 - task: PublishBuildArtifacts@1
