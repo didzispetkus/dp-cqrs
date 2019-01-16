@@ -54,7 +54,7 @@ steps:
 
 # Build NuGet packages
 - task: NuGetCommand@2
-  displayName: 'NuGet custom pack'
+  displayName: 'NuGet Custom Pack'
   inputs:
     command: custom
     arguments: 'pack src/DP.CQRS/DP.CQRS.csproj -IncludeReferencedProjects -Symbols -SymbolPackageFormat snupkg -OutputDirectory $(Build.ArtifactStagingDirectory)/packages -Properties Configuration=$(buildConfiguration)'
