@@ -5,8 +5,8 @@ variables:
   buildConfiguration: 'Release'
   buildPlatform: 'Any CPU'
   nugetPackFiles: |
-    **\*.csproj
-    !src\DP.CQRS.Core\**\*.csproj
+    src\DP.CQRS\DP.CQRS.csproj
+    src\DP.CQRS.Async\DP.CQRS.Async.csproj
 
 pool:
   name: Hosted VS2017
