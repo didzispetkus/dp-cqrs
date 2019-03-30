@@ -5,9 +5,9 @@ using Moq;
 namespace DP.CQRS.Tests
 {
     [TestClass]
-    public partial class QueryDispatcherTests
+    public class QueryDispatcherTests
     {
-        private IQueryDispatcher CreateQueryDispatcher(IServiceProvider provider) => new QueryDispatcher(provider);
+        private static IQueryDispatcher CreateQueryDispatcher(IServiceProvider provider) => new QueryDispatcher(provider);
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -20,7 +20,7 @@ namespace DP.CQRS.Tests
         public void Dispatch_ValidQuery_ReturnsValue()
         {
             //Arrange
-            var expectedValue = "This is a unit test";
+            const string expectedValue = "This is a unit test";
 
             var handlerMock = new Mock<IQueryHandler<TestQuery, string>>();
             handlerMock

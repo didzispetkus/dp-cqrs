@@ -5,7 +5,7 @@ using Moq;
 namespace DP.CQRS.Tests
 {
     [TestClass]
-    public partial class CommandDispatcherTests
+    public class CommandDispatcherTests
     {
         private static ICommandDispatcher CreateCommandDispatcher(IServiceProvider serviceProvider) => new CommandDispatcher(serviceProvider);
 
@@ -51,7 +51,7 @@ namespace DP.CQRS.Tests
         {
             //Arrange
             var expectedHandlerType = typeof(ICommandHandler<TestCommand>);
-            bool exceptionThrown = false;
+            var exceptionThrown = false;
 
             var serviceProviderMock = new Mock<IServiceProvider>();
             serviceProviderMock.Setup(x => x.GetService(expectedHandlerType)).Returns(null);

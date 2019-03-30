@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>DP.CQRS</RootNamespace>
     <VersionPrefix>1.0.0</VersionPrefix>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
 </Project>
