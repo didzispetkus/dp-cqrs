@@ -4,6 +4,9 @@ name: $(date:yyyyMMdd)$(rev:.r)
 variables:
   buildConfiguration: 'Release'
   buildPlatform: 'Any CPU'
+  nugetPackFiles: |
+    **\*.csproj
+    !src\DP.CQRS.Core\**\*.csproj
 
 pool:
   name: Hosted VS2017
@@ -56,8 +59,8 @@ steps:
 - task: NuGetCommand@2
   displayName: 'NuGet Custom Pack'
   inputs:
-    command: custom
-    arguments: 'pack src/DP.CQRS/DP.CQRS.csproj -IncludeReferencedProjects -Symbols -SymbolPackageFormat snupkg -OutputDirectory $(Build.ArtifactStagingDirectory)/packages -Properties Configuration=$(buildConfiguration)'
+    command: custom  
+    arguments: 'pack $(nugetPackFiles) -IncludeReferencedProjects -Symbols -SymbolPackageFormat snupkg -OutputDirectory $(Build.ArtifactStagingDirectory)/packages -Properties Configuration=$(buildConfiguration)'
 
 # Publish Artifacts
 - task: PublishBuildArtifacts@1
