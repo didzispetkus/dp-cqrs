@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+
+    <Description>Command Query Responsibility Segregation (CQRS) design pattern.</Description>
+    <PackageLicenseUrl>https://github.com/didzispetkus/dp-cqrs/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl></PackageProjectUrl>
+    <PackageTags>Command Query Responsibility Segregation CQRS</PackageTags>
+    <Authors>Didzis Petkus</Authors>
+    <Company />
+    <Product />
+    <RepositoryUrl>https://github.com/didzispetkus/dp-cqrs</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DP.CQRS.Core\DP.CQRS.Core.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+  </ItemGroup>
+
+</Project>
