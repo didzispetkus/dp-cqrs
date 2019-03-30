@@ -4,9 +4,6 @@ name: $(date:yyyyMMdd)$(rev:.r)
 variables:
   buildConfiguration: 'Release'
   buildPlatform: 'Any CPU'
-  nugetPackFiles: |
-    src\DP.CQRS\DP.CQRS.csproj
-    src\DP.CQRS.Async\DP.CQRS.Async.csproj
 
 pool:
   name: Hosted VS2017
@@ -55,12 +52,23 @@ steps:
     platform: $(buildPlatform)
     configuration: $(buildConfiguration)
 
+# Nuget pack does not support "-SymbolPackageFormat snupkg" switch and NuGet custom does not support wildcards,
+# therefore as a workaround, there are two explicit NuGet packing tasks. 
+# Need to look into how we can do this more dynamically, so when adding new project we do not need to create a new task to create nuget packages
+
 # Build NuGet packages
 - task: NuGetCommand@2
-  displayName: 'NuGet Custom Pack'
+  displayName: 'NuGet Pack CQRS'
   inputs:
-    command: custom  
-    arguments: 'pack $(nugetPackFiles) -IncludeReferencedProjects -Symbols -SymbolPackageFormat snupkg -OutputDirectory $(Build.ArtifactStagingDirectory)/packages -Properties Configuration=$(buildConfiguration)'
+    command: custom
+    arguments: 'pack src/DP.CQRS/DP.CQRS.csproj -IncludeReferencedProjects -Symbols -SymbolPackageFormat snupkg -OutputDirectory $(Build.ArtifactStagingDirectory)/packages -Properties Configuration=$(buildConfiguration)'
+
+# Build NuGet packages
+- task: NuGetCommand@2
+  displayName: 'NuGet Pack CQRS Async'
+  inputs:
+    command: custom
+    arguments: 'pack src/DP.CQRS.Async/DP.CQRS.Async.csproj -IncludeReferencedProjects -Symbols -SymbolPackageFormat snupkg -OutputDirectory $(Build.ArtifactStagingDirectory)/packages -Properties Configuration=$(buildConfiguration)'
 
 # Publish Artifacts
 - task: PublishBuildArtifacts@1
