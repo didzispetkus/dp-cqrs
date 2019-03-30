@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace DP.CQRS.Tests
+namespace DP.CQRS.Async.Tests
 {
     [TestClass]
-    public class CommandDispatcherTests
+    public class AsyncCommandDispatcherTests
     {
-        private static ICommandDispatcher CreateCommandDispatcher(IServiceProvider serviceProvider) => new CommandDispatcher(serviceProvider);
+        private static IAsyncCommandDispatcher CreateCommandDispatcher(IServiceProvider serviceProvider) => new AsyncCommandDispatcher(serviceProvider);
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -17,40 +19,45 @@ namespace DP.CQRS.Tests
         }
 
         [TestMethod]
-        public void Dispatch_ValidCommand_CommandHandled()
+        public async Task DispatchAsync_ValidCommand_CommandHandled()
         {
             //Arrange
             var commandHandled = false;
 
-            var commandHandlerMock = new Mock<ICommandHandler<TestCommand>>();
-            commandHandlerMock.Setup(x => x.Handle(It.IsAny<TestCommand>())).Callback(() => commandHandled = true);
+            var commandHandlerMock = new Mock<IAsyncCommandHandler<AsyncTestCommand>>();
+            commandHandlerMock.Setup(
+                    x => x.HandleAsync(It.IsAny<AsyncTestCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask)
+                .Callback(() => commandHandled = true);
 
             var serviceProviderMock = new Mock<IServiceProvider>();
-            serviceProviderMock.Setup(x => x.GetService(typeof(ICommandHandler<TestCommand>))).Returns(commandHandlerMock.Object);
+            serviceProviderMock.Setup(x => x.GetService(typeof(IAsyncCommandHandler<AsyncTestCommand>))).Returns(commandHandlerMock.Object);
 
             var dispatcher = CreateCommandDispatcher(serviceProviderMock.Object);
+            var source = new CancellationTokenSource();
             //Act
-            dispatcher.Dispatch(new TestCommand());
+            await dispatcher.DispatchAsync(new AsyncTestCommand(), source.Token);
 
             //Assert
             Assert.IsTrue(commandHandled);
+            Assert.IsFalse(source.Token.IsCancellationRequested);
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Dispatch_NullCommand_ThrowsArgumentNullException()
+        public async Task DispatchAsync_NullCommand_ThrowsArgumentNullException()
         {
             //Arrange
             var dispatcher = CreateCommandDispatcher(new Mock<IServiceProvider>().Object);
             //Act
-            dispatcher.Dispatch((TestCommand)null);
+            await dispatcher.DispatchAsync((AsyncTestCommand)null);
         }
 
         [TestMethod]
-        public void Dispatch_NonRegisteredHandler_ThrowsCommandHandlerNotFoundException()
+        public async Task DispatchAsync_NonRegisteredHandler_ThrowsCommandHandlerNotFoundException()
         {
             //Arrange
-            var expectedHandlerType = typeof(ICommandHandler<TestCommand>);
+            var expectedHandlerType = typeof(IAsyncCommandHandler<AsyncTestCommand>);
             var exceptionThrown = false;
 
             var serviceProviderMock = new Mock<IServiceProvider>();
@@ -61,7 +68,7 @@ namespace DP.CQRS.Tests
             //Act
             try
             {
-                dispatcher.Dispatch(new TestCommand());
+                await dispatcher.DispatchAsync(new AsyncTestCommand());
             }
             catch (CommandHandlerNotFoundException ex)
             {

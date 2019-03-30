@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace DP.CQRS.Tests
+namespace DP.CQRS.Async.Tests
 {
     [TestClass]
-    public class QueryDispatcherTests
+    public class AsyncQueryDispatcherTests
     {
-        private static IQueryDispatcher CreateQueryDispatcher(IServiceProvider provider) => new QueryDispatcher(provider);
+        private static IAsyncQueryDispatcher CreateQueryDispatcher(IServiceProvider provider) => new AsyncQueryDispatcher(provider);
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -17,24 +19,24 @@ namespace DP.CQRS.Tests
         }
 
         [TestMethod]
-        public void Dispatch_ValidQuery_ReturnsValue()
+        public async Task DispatchAsync_ValidQuery_ReturnsValue()
         {
             //Arrange
             const string expectedValue = "This is a unit test";
 
-            var handlerMock = new Mock<IQueryHandler<TestQuery, string>>();
+            var handlerMock = new Mock<IAsyncQueryHandler<AsyncTestQuery, string>>();
             handlerMock
-                .Setup(x => x.Handle(It.IsAny<TestQuery>()))
-                .Returns(expectedValue);
+                .Setup(x => x.HandleAsync(It.IsAny<AsyncTestQuery>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(expectedValue));
 
             var serviceMock = new Mock<IServiceProvider>();
             serviceMock.Setup(x => x.GetService(It.IsAny<Type>())).Returns(handlerMock.Object);
 
             var dispatcher = CreateQueryDispatcher(serviceMock.Object);
-            var query = new TestQuery();
+            var query = new AsyncTestQuery();
 
             //Act
-            var actualValue = dispatcher.Dispatch(query);
+            var actualValue = await dispatcher.DispatchAsync(query);
 
             //Assert
             Assert.AreEqual(expectedValue, actualValue);
@@ -42,19 +44,19 @@ namespace DP.CQRS.Tests
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void Dispatch_NullQuery_ThrowsArgumentNullException()
+        public async Task DispatchAsync_NullQuery_ThrowsArgumentNullException()
         {
             //Arrange
             var dispatcher = CreateQueryDispatcher(new Mock<IServiceProvider>().Object);
             //Act
-            dispatcher.Dispatch((TestQuery)null);
+            await dispatcher.DispatchAsync((AsyncTestQuery)null);
         }
 
         [TestMethod]
-        public void Dispatch_NonRegisteredHandler_ThrowsQueryHandlerNotFoundException()
+        public async Task DispatchAsync_NonRegisteredHandler_ThrowsQueryHandlerNotFoundException()
         {
             //Arrange
-            var expectedHandlerType = typeof(IQueryHandler<TestQuery, string>);
+            var expectedHandlerType = typeof(IAsyncQueryHandler<AsyncTestQuery, string>);
             var mock = new Mock<IServiceProvider>();
             mock.Setup(x => x.GetService(expectedHandlerType)).Returns(null);
 
@@ -64,7 +66,7 @@ namespace DP.CQRS.Tests
             //Act
             try
             {
-                dispatcher.Dispatch(new TestQuery());
+                await dispatcher.DispatchAsync(new AsyncTestQuery());
             }
             catch (QueryHandlerNotFoundException ex)
             {
